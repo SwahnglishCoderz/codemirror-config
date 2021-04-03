@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeMirror</title>
+    <link rel="stylesheet" href="./codemirror.css" />
+    <link rel="stylesheet" href="./theme/blackboard.css" />
+    <link rel="stylesheet" href="./addon/merge/merge.css" />
+    <link rel="stylesheet" href="./addon/fold/foldgutter.css" />
+    <link rel="stylesheet" href="./addon/hint/show-hint.css" />
+    <link rel="stylesheet" href="./addon/display/fullscreen.css" />
+    <link rel="stylesheet" href="./addon/scroll/simplescrollbars.css" />
+    <link rel="stylesheet" href="./addon/search/matchesonscrollbar.css">
+</head>
+<body>
+    <textarea id="codemirror" name="codemirror"></textarea>
+    
+    <script src="./codemirror.js"></script>
+    <script src="./sql/sql.js"></script>
+    <script src="./addon/merge/merge.js"></script>
+    <script src="./addon/fold/brace-fold.js"></script>
+    <script src="./addon/fold/comment-fold.js"></script>
+    <script src="./addon/fold/foldcode.js"></script>
+    <script src="./addon/fold/foldgutter.js"></script>
+    <script src="./addon/fold/indent-fold.js"></script>
+    <script src="./addon/hint/show-hint.js"></script>
+    <script src="./addon/hint/sql-hint.js"></script>
+    <script src="./addon/display/rulers.js"></script>
+    <script src="./addon/display/fullscreen.js"></script>
+    <script src="./addon/edit/closebrackets.js"></script>
+    <script src="./addon/edit/matchbrackets.js"></script>
+    <script src="./addon/selection/active-line.js"></script>
+    <script src="./addon/selection/mark-selection.js"></script>
+    <script src="./addon/selection/selection-pointer.js"></script>
+    <script src="./addon/scroll/scrollpastend.js"></script>
+    <script src="./addon/scroll/simplescrollbars.js"></script>
+    <script src="./addon/wrap/hardwrap.js"></script>
+    <script src="./addon/comment/comment.js"></script>
+    <script src="./addon/comment/continuecomment.js"></script>
+    <script src="./addon/search/search.js"></script>
+    <script src="./addon/search/jump-to-line.js"></script>
+    <script src="./addon/search/match-highlighter.js"></script>
+    <script src="./addon/search/matchesonscrollbar.js"></script>
+    <script src="./addon/search/searchcursor.js"></script>
+    <script>
+        const makeMarker = () => {
+            let marker = document.createElement("div");
+            marker.style.color = "#ff0000";
+            marker.innerHTML = "●";
+            return marker;
+        };
+        const cmOptions = {
+            tabSize: 2,
+            mode: "sql",
+            theme: "blackboard",
+            line: true,
+            lineNumbers: true,
+            styleActiveLine: true,
+            autoCloseBrackets: true,
+            highlightSelectionMatches: true,
+            scrollbarStyle: "simple",
+            gutters: ["CodeMirror-lint-markers", "breakpoints"],
+            extraKeys: {
+            "Ctrl-Space": "autocomplete",
+            "F11": cm => {
+                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+            },
+            "Esc": cm => {
+                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+            }
+            },
+        };
+        const codemirror = CodeMirror.fromTextArea(document.getElementById("codemirror"), cmOptions);
+        codemirror.on("change", cm => {
+            console.log(cm.getValue());
+        });
+        codemirror.on("gutterClick", (cm, n) => {
+            let info = cm.lineInfo(n);
+            cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : makeMarker());
+      });
+    </script>
+</body>
+</html>
